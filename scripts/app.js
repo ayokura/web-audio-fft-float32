@@ -20,6 +20,7 @@ var mute = document.querySelector('.mute');
 
 //set up the different audio nodes we will use for the app
 
+// ここ重要
 var analyser = audioCtx.createAnalyser();
 analyser.minDecibels = -90;
 analyser.maxDecibels = -10;
@@ -129,53 +130,8 @@ function visualize() {
   var visualSetting = visualSelect.value;
   console.log(visualSetting);
 
-  if(visualSetting == "sinewave") {
+    // ここが本題
     analyser.fftSize = 1024;
-    var bufferLength = analyser.fftSize;
-    console.log(bufferLength);
-    var dataArray = new Float32Array(bufferLength);
-
-    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
-
-    function draw() {
-
-      drawVisual = requestAnimationFrame(draw);
-
-      analyser.getFloatTimeDomainData(dataArray);
-
-      canvasCtx.fillStyle = 'rgb(200, 200, 200)';
-      canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-
-      canvasCtx.lineWidth = 2;
-      canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
-
-      canvasCtx.beginPath();
-
-      var sliceWidth = WIDTH * 1.0 / bufferLength;
-      var x = 0;
-
-      for(var i = 0; i < bufferLength; i++) {
-   
-        var v = dataArray[i] * 200.0;
-        var y = HEIGHT/2 + v;
-
-        if(i === 0) {
-          canvasCtx.moveTo(x, y);
-        } else {
-          canvasCtx.lineTo(x, y);
-        }
-
-        x += sliceWidth;
-      }
-
-      canvasCtx.lineTo(canvas.width, canvas.height/2);
-      canvasCtx.stroke();
-    };
-
-    draw();
-
-  } else if(visualSetting == "frequencybars") {
-    analyser.fftSize = 256;
     var bufferLength = analyser.frequencyBinCount;
     console.log(bufferLength);
     var dataArray = new Float32Array(bufferLength);
@@ -206,11 +162,6 @@ function visualize() {
 
     draw();
 
-  } else if(visualSetting == "off") {
-    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
-    canvasCtx.fillStyle = "red";
-    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-  }
 
 }
 
